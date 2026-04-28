@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "mkdir app/db; nodemon app/src/js/server.js"
+    "start": "mkdir app\\db && nodemon app/src/js/server.js"
   },
   "author": "Jordan Bertasso",
   "license": "ISC",
