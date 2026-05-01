@@ -2,6 +2,7 @@
 
 require("dotenv").config();
 const express = require("express");
+const helmet = require("helmet");
 const fileUpload = require("express-fileupload");
 const session = require("express-session");
 const bodyParser = require("body-parser");
@@ -9,6 +10,7 @@ const path = require("path");
 
 // Initialise app and router
 const app = express();
+app.use(helmet());
 
 // Constants
 const HOST = process.env.HOST;
@@ -17,10 +19,14 @@ const PORT = process.env.PORT;
 // Middlware
 app.use(
   session({
-    secret: "secret",
-    resave: true,
-    saveUninitialized: true
-  })
+  secret: "secret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    sameSite: "strict"
+  }
+})
 );
 app.enable("trust proxy");
 app.use(bodyParser.urlencoded({ extended: true }));
