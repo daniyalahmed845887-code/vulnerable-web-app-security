@@ -7,6 +7,14 @@ const fileUpload = require("express-fileupload");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const path = require("path");
+const winston = require("winston");
+
+const logger = winston.createLogger({
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: "security.log" })
+  ]
+});
 
 // Initialise app and router
 const app = express();
@@ -52,4 +60,4 @@ app.use("/auth", auth);
 
 app.listen(PORT, HOST);
 
-console.log(`Listening on http://${HOST}:${PORT}`);
+logger.info(`Application started on http://${HOST}:${PORT}`);

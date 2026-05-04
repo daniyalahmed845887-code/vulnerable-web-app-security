@@ -3,6 +3,14 @@ const jwt = require("jsonwebtoken");
 const express = require("express");
 const validator = require("validator");
 const router = express.Router();
+const winston = require("winston");
+
+const logger = winston.createLogger({
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: "security.log" })
+  ]
+});
 
 // Import database
 const db = require("../db.js");
@@ -46,21 +54,21 @@ router.post("/", function(request, response) {
 
             addDetails(username, request.ip, request.headers["user-agent"]);
 
-            console.log(request.ip);
-            console.log(request.headers["user-agent"]);
+            logger.info(`Successful login from IP: ${request.ip}`);
+            logger.info(`User-Agent: ${request.headers["user-agent"]}`);
 
             response.redirect("/home");
 
           } else {
 
-            console.log("Invalid login");
+            logger.warn(`Failed login attempt for username: ${username}`);
             response.send("Invalid username or password");
 
           }
 
         } else {
 
-          console.log("Invalid login");
+          logger.warn(`Failed login attempt for username: ${username}`);
           response.send("Invalid username or password");
 
         }
