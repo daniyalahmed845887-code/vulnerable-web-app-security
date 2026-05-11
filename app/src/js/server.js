@@ -3,6 +3,8 @@
 require("dotenv").config();
 const express = require("express");
 const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const session = require("express-session");
 const bodyParser = require("body-parser");
@@ -18,7 +20,32 @@ const logger = winston.createLogger({
 
 // Initialise app and router
 const app = express();
-app.use(helmet());
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5,
+  message: "Too many requests from this IP, please try again later."
+});
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"]
+      }
+    },
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true
+    }
+  })
+);
+app.use(limiter);
+
+app.use(cors({
+  origin: "http://localhost:8080"
+}));
 
 // Constants
 const HOST = process.env.HOST;
