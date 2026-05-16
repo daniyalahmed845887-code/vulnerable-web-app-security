@@ -5,6 +5,7 @@ const express = require("express");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 const session = require("express-session");
 const bodyParser = require("body-parser");
@@ -63,10 +64,13 @@ app.use(
   }
 })
 );
-app.enable("trust proxy");
+app.set("trust proxy", 1);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(fileUpload());
+// const csrfProtection = csrf({ cookie: true });
+// app.use(csrfProtection);
 
 // Routes
 const login = require("./routes/login.js");
